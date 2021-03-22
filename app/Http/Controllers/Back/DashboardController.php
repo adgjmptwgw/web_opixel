@@ -13,8 +13,9 @@ class DashboardController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
+    // シングルアクションコントローラー(__invoke)
     public function __invoke(Request $request)
     {
-        //
+        return view('back.dashboard');
     }
 }

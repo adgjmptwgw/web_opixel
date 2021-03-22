@@ -5,14 +5,8 @@ use Illuminate\Support\Facades\Route;
 //     echo 'front';
 // });
 
-// ホーム画面表示
-// Route::get('/', 'PostController@index')->name('home');
-Route::get('/', [App\Http\Controllers\Front\PostController::class, 'index'])->name('home');
+// ホーム画面表示処理
+Route::get('/', 'PostController@index')->name('home');
 
-// Route::get('/posts', [App\Http\Controllers\Front\PostController::class, 'index']);
-// Route::get('/posts', [App\Http\Controllers\Front\PostController::class, 'show']);
-
+// 投稿一覧・詳細表示処理
 Route::resource('/posts', 'PostController')->only(['index','show']);
-// Route::resource('/posts', App\Http\Controllers\Front\PostController::class)->only([
-//   'index', 'show'
-// ]);
