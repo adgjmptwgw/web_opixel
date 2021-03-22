@@ -1,0 +1,17 @@
+<?php
+$title = '投稿編集';
+?>
+@extends('back.layouts.base')
+ 
+@section('content')
+<div class="card-header">投稿編集</div>
+<div class="card-body">
+<!-- 編集処理の為、Form::modelを用いる -->
+    {!! Form::model($post, [
+        'route' => ['back.posts.update', $post],
+        'method' => 'put'
+    ]) !!}
+    @include('back.posts._form')
+    {!! Form::close() !!}
+</div>
+@endsection
