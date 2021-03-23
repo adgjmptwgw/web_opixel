@@ -14,6 +14,11 @@ class PostSeeder extends Seeder
      */
     public function run()
     {
-        Post::factory()->count(50)->create();
+        // post.phpのprotected static function boot()にsavingがある為、シーダーのコマンド実行時にも、
+        // savingの処理が実行されてエラーになる。(シーダーコマンド実行時にはログイン情報が取れないから)
+        // その為、一時的に処理を止める為に\Event::fakeForを使う。
+        \Event::fakeFor(function () {
+         Post::factory()->count(50)->create();
+         });
     }
 }

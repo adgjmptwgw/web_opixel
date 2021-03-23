@@ -18,6 +18,7 @@ $title = '投稿一覧';
                     <th scope="col">タイトル</th>
                     <th scope="col" style="width: 4.3em">状態</th>
                     <th scope="col" style="width: 9em">公開日</th>
+                    <th scope="col">編集者</th>
                     <th scope="col" style="width: 12em">編集</th>
                 </tr>
             </thead>
@@ -28,6 +29,7 @@ $title = '投稿一覧';
                     <td>{{ $post->title }}</td>
                     <td>{{ $post->is_public_label }}</td>
                     <td>{{ $post->published_format }}</td>
+                    <td>{{ $post->user->name }}</td> 
                     <td class="d-flex justify-content-center">
                         <!-- 投稿詳細参照ボタン -->
                         {{ link_to_route('front.posts.show', '詳細', $post, [

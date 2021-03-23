@@ -21,13 +21,17 @@ class PostFactory extends Factory
      */
     public function definition()
     {
+        // dateTimeBetweenでランダムな時間を作成する。
         $random_date = $this->faker->dateTimeBetween('-1year', '-1day');
  
         return [
-            'title' => $this->faker->realText(rand(20,50)),
+            // realTextで20文字から50文字までのランダムなfakeテキストを作成
+             'title' => $this->faker->realText(rand(20,50)),
             'body' => $this->faker->realText(rand(100,200)),
             'is_public' => $this->faker->boolean(90),
             'published_at' => $random_date,
+            // numberBetweenで1から3までのランダムな数字を作成
+            'user_id' => $this->faker->numberBetween(1,3),
             'created_at' => $random_date,
             'updated_at' => $random_date
         ];

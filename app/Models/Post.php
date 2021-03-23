@@ -33,6 +33,23 @@ class Post extends Model
 {
     use HasFactory;
 
+    // Userテーブルとのリレーション
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    protected static function boot()
+   {
+    // parentで指定のクラスを実行させる
+    parent::boot();
+ 
+    // 新規投稿及び投稿編集時に自動で編集者をログインユーザーに設定する
+    self::saving(function($post) {
+        $post->user_id = \Auth::id();
+    });
+   }
+
     protected $fillable = [
         'title', 'body', 'is_public', 'published_at'
     ];

@@ -20,8 +20,11 @@ class PostController extends Controller
      */
     public function index()
     {
-        // created_atの最新順に取り出す
-        $posts = Post::latest('id')->paginate(20);
+        // 投稿を最新順に取り出す
+        // 「N＋1問題」防止の為にwith('user')で、リレーションであるuserテーブルを取得。
+        // リレーションテーブルのデータを取得する際は「N＋1問題」の防止策を講じる。 ※処理速度に影響が出る為
+        $posts = Post::with('user')->latest('id')->paginate(20);
+
         // compactで複数の変数をviewへ。今回は単一の変数。※withは変数
         return view('back.posts.index', compact('posts'));
     }
