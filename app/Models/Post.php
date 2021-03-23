@@ -38,6 +38,11 @@ class Post extends Model
     {
         return $this->belongsTo(User::class);
     }
+    // Tagテーブルとのリレーション
+    public function tags()
+    {
+        return $this->belongsToMany(Tag::class);
+    }
 
     protected static function boot()
    {
@@ -66,13 +71,19 @@ class Post extends Model
     }
  
     // 公開記事一覧取得
-    public function scopePublicList(Builder $query)
+    public function scopePublicList(Builder $query, string $tagSlug = null)
     {
+        if ($tagSlug) {
+            $query->whereHas('tags', function($query) use ($tagSlug) {
+                $query->where('slug', $tagSlug);
+            });
+        }
         return $query
+            ->with('tags')
             ->public()
             ->latest('published_at')
             ->paginate(10);
-    }
+        }
  
     // 公開記事をIDで取得
     public function scopePublicFindById(Builder $query, int $id)

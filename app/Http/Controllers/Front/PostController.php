@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers\Front;
 
+// Post,Tagモデルを使用する
 use App\Models\Post;
+use App\Models\Tag;
+
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
@@ -13,12 +16,14 @@ class PostController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($tagSlug = null)
     {
         // 公開・新しい順に表示
         // post.phpのpublicList()関数を実行して、DBからデータを取得する。
-        $posts = Post::publicList();
-        return view('front.posts.index', compact('posts'));
+        $posts = Post::publicList($tagSlug);
+        $tags = Tag::all();
+        
+        return view('front.posts.index', compact('posts', 'tags'));
     }
 
     /**

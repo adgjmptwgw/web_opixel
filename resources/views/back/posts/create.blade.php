@@ -8,6 +8,7 @@ $title = '投稿登録';
     <div class="card-body">
     <!-- Form::open ::close (フォームタグ)  -->
         {{ Form::open(['route' => 'back.posts.store']) }}
+        <!-- 編集画面同様のフォームを呼び出す -->
         @include('back.posts._form')
         {{ Form::close() }}
     </div>

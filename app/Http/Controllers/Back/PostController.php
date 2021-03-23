@@ -4,8 +4,9 @@ namespace App\Http\Controllers\Back;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-// Post,Userモデルを使用
+// Post,Tag,Userモデルを使用
 use App\Models\Post;
+use App\Models\Tag;
 use App\Models\User;
 // バリデーションの値を取得するpath
 use App\Http\Requests\PostRequest;
@@ -24,6 +25,7 @@ class PostController extends Controller
         // 「N＋1問題」防止の為にwith('user')で、リレーションであるuserテーブルを取得。
         // リレーションテーブルのデータを取得する際は「N＋1問題」の防止策を講じる。 ※処理速度に影響が出る為
         $posts = Post::with('user')->latest('id')->paginate(20);
+        // 公開・新しい順に表示
 
         // compactで複数の変数をviewへ。今回は単一の変数。※withは変数
         return view('back.posts.index', compact('posts'));
@@ -35,8 +37,11 @@ class PostController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function create()
-    {
-        return view('back.posts.create');
+    { 
+        // pluckメソッドを使用すれば、テーブルのあるカラムを配列にして取り出せる。
+        // 今回はキーがidでバリューがnameのコレクションを生成。
+        $tags = Tag::pluck('name', 'id')->toArray();
+        return view('back.posts.create', compact('tags'));
     }
 
     /**
@@ -45,9 +50,13 @@ class PostController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    // public function store(Request $request)
+    public function store(PostRequest $request)
     {
         $post = Post::create($request->all());
+        // 多対多のリレーションがある場合は、目的に応じてメソッドを使い分ける。
+        // attachはデータ登録に用いる。データの重複は問題ない。
+        $post->tags()->attach($request->tags);
 
         // もしバリデーションした値が$postにあれば(true)、登録成功アナウンス→投稿編集画面へ
         if ($post) {
@@ -82,7 +91,8 @@ class PostController extends Controller
     public function edit(Post $post)
     {
         // 各投稿の編集画面
-        return view('back.posts.edit', compact('post'));
+        $tags = Tag::pluck('name', 'id')->toArray();
+        return view('back.posts.create', compact('tags'));
     }
 
     /**
@@ -94,6 +104,9 @@ class PostController extends Controller
      */
     public function update(PostRequest $request, Post $post)
     {
+        // 値を重複させずにデータを挿入できる。(同じデータがDBに入ったら困る時に使える)
+        $post->tags()->sync($request->tags);
+
     //   登録処理と同じくバリエーション次第
       if ($post->update($request->all())) {
         $flash = ['success' => 'データを更新しました。'];
@@ -114,15 +127,18 @@ class PostController extends Controller
      */
     public function destroy(Post $post)
     {
+        // ポストテーブルに紐付いたtagテーブルのidが削除される。
+        $post->tags()->detach();
+
         // idを取得して、当該のレコードを削除
-    if ($post->delete()) {
-        $flash = ['success' => 'データを削除しました。'];
-    } else {
-        $flash = ['error' => 'データの削除に失敗しました'];
-    }
- 
-    return redirect()
-        ->route('back.posts.index')
-        ->with($flash);
-    }
+        if ($post->delete()) {
+            $flash = ['success' => 'データを削除しました。'];
+        } else {
+            $flash = ['error' => 'データの削除に失敗しました'];
+        }
+    
+        return redirect()
+            ->route('back.posts.index')
+            ->with($flash);
+        }
 }
