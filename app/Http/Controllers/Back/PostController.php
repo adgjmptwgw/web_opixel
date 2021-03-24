@@ -89,10 +89,11 @@ class PostController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function edit(Post $post)
-    {
-        // 各投稿の編集画面
+    {        
+        // pluckメソッドを使用すれば、テーブルのあるカラムを配列にして取り出せる。
+        // 今回はキーがidでバリューがnameのコレクションを生成。
         $tags = Tag::pluck('name', 'id')->toArray();
-        return view('back.posts.create', compact('tags'));
+        return view('back.posts.edit', compact('tags','post'));
     }
 
     /**
@@ -104,7 +105,7 @@ class PostController extends Controller
      */
     public function update(PostRequest $request, Post $post)
     {
-        // 値を重複させずにデータを挿入できる。(同じデータがDBに入ったら困る時に使える)
+        // sync 値を重複させずにデータを挿入できる。(同じデータがDBに入ったら困る時に使える)
         $post->tags()->sync($request->tags);
 
     //   登録処理と同じくバリエーション次第

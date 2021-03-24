@@ -52,6 +52,9 @@ class RouteServiceProvider extends ServiceProvider
                 ->group(base_path('routes/front.php'));
  
             // 管理画面
+            // グループ内の全ルートのURLに特定の文字列を付け加えたいとき、prefix()メソッドを利用する。
+            // 今回urlが'/posts'ではなく、'admin/posts'で投稿一覧にアクセスできる。
+            // urlで/admin直打ちでアクセスされない様にmiddlewareにauthを加える。
             Route::prefix('admin')
                 ->middleware(['web', 'auth'])
                 ->namespace($this->namespace . '\Back')

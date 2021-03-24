@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- isset()は括弧内の変数に値があれば表示され、値がなければ非表示になる -->
     <title>{{ isset($title) ? $title . ' | ' : '' }}管理画面</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" crossorigin="anonymous">
 </head>

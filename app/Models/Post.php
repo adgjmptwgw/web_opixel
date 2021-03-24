@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+// Builderを使用する際に下記追記
 use Illuminate\Database\Eloquent\Builder;
 
 /**
@@ -55,25 +56,28 @@ class Post extends Model
     });
    }
 
+    // fillable・・・指定したカラムのみ取得、使用する。
     protected $fillable = [
         'title', 'body', 'is_public', 'published_at'
     ];
- 
+    // DBからデータを取り出す際はデータの型を持っていない。(全てStringで取得される。)
+    // castsを用いれば、DBから取り出すデータに型を付ける事ができる。
     protected $casts = [
         'is_public' => 'bool',
         'published_at' => 'datetime'
     ];
 
-    // 公開のみ表示
+    // 公開のみ表示(公開設定である、is_publicがtrueのものだけを取得)
     public function scopePublic(Builder $query)
     {
         return $query->where('is_public', true);
     }
  
-    // 公開記事一覧取得
+    // 記事の一覧画面のデータを全て取得 (公開記事一覧取得)
     public function scopePublicList(Builder $query, string $tagSlug = null)
     {
         if ($tagSlug) {
+            // リレーション先のカラムも取得したい場合にwhereHasを用いる。
             $query->whereHas('tags', function($query) use ($tagSlug) {
                 $query->where('slug', $tagSlug);
             });
@@ -85,9 +89,11 @@ class Post extends Model
             ->paginate(10);
         }
  
-    // 公開記事をIDで取得
+    // 詳細の記事のデータを取得する処理 (公開記事をIDで取得)
     public function scopePublicFindById(Builder $query, int $id)
     {
+        // find()       もし該当するデータが無かった場合、nullを返す
+        // findOrFail() もし該当するデータが無かった場合、404 | Not Found 画面へ(通常ユーザ向け)
         return $query->public()->findOrFail($id);
     }
 

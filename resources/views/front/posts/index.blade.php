@@ -8,8 +8,10 @@ $title = '投稿一覧';
  
 @section('content')
 <div class="card-header">{{ $title }}</div>
-<!-- タグ -->
+        <!-- タグ -->
         <ul class="nav nav-pills mb-2">
+            <!-- segment(3)の場合、URLをオブジェクトにして3つ目の値を取得する。 
+                 /post/2/edit だとeditを取得する -->
             <li class="nav-item">
                 {{ link_to_route('front.posts.index', 'すべて', null, [
                     'class' => 'nav-link'.

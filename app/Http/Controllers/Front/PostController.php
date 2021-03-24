@@ -19,7 +19,9 @@ class PostController extends Controller
     public function index($tagSlug = null)
     {
         // 公開・新しい順に表示
-        // post.phpのpublicList()関数を実行して、DBからデータを取得する。
+        // post.phpのpublicList()を実行して、DBからデータを取得する。
+        // postsの値はpost.phpにて処理されたものが帰ってくる
+        // 同じ様な処理が複数存在する場合、この様にscope化して使用する。
         $posts = Post::publicList($tagSlug);
         $tags = Tag::all();
         
@@ -53,6 +55,8 @@ class PostController extends Controller
      * @param  \App\Models\Post  $post
      * @return \Illuminate\Http\Response
      */
+
+    // 引数のintはデータ型を指定している。
     public function show(int $id)
     {
         // post.phpでpublicFindByIdを実行し、DBからデータを取得する。
